@@ -1,7 +1,14 @@
 #!/bin/bash
 
+# Check if the container already exists
+if [ "$(docker ps -aq -f name=myredis)" ]; then
+    # If it does, stop and remove it
+    docker stop myredis
+    docker rm myredis
+fi
+
 # Start the Redis container
-docker run --name myredis -p 6378:6379 -d redis
+docker run --name myredis -p 6379:6379 -d redis
 
 # Sleep for a few seconds to make sure the container starts
 sleep 5
@@ -10,7 +17,7 @@ sleep 5
 container_id=$(docker ps -aqf "name=myredis")
 
 # Get the PID of the Redis process running inside the Docker container
-pid=$(docker inspect --format '{{.State.Pid}}' $container_id)
+pid=$(docker inspect --format '{{.State.Pid}}' "$container_id")
 
 # Print out the PID
 echo "The PID of the Redis process is: $pid"

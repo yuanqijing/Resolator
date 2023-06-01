@@ -29,14 +29,14 @@ echo "Output will be written to: $output_file_path"
 
 while true; do
     # Run perf stat and save the output
-    perf_output=$(perf stat -e cycles,instructions -p $pid --null -- sleep 5)
+    perf_output=$(perf stat -e cycles,instructions -p "$pid" -- sleep 1 2>&1)
 
     # Extract cycles and instructions from the output
-    cycles=$(echo "$perf_output" | grep -oP '(?<=cycles:)\s*\d*')
-    instructions=$(echo "$perf_output" | grep -oP '(?<=instructions:)\s*\d*')
+    cycles=$(echo "$perf_output" | awk '/cycles/ {print $1}' | tr -d ',')
+    instructions=$(echo "$perf_output" | awk '/instructions/ {print $1}' | tr -d ',')
 
     # Calculate CPI
-    if [ $instructions -eq 0 ]; then
+    if [ -z "$instructions" ] || [ "$instructions" -eq 0 ]; then
         cpi="NaN"
     else
         cpi=$(echo "$cycles / $instructions" | bc -l)
@@ -46,6 +46,7 @@ while true; do
     timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
     # Write the CPI with timestamp to the output file
+    echo "$timestamp - CPI: $cpi"
     echo "$timestamp - CPI: $cpi" >> $output_file_path
 
     # Wait for 5 seconds before the next round
