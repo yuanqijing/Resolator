@@ -1,0 +1,16 @@
+# Use the official golang image from the Docker Hub
+FROM golang:1.20.2
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Install basic tools
+RUN apt-get update && apt-get install -y \
+    vim \
+    git
+
+# Go version and environment info
+RUN go version
+RUN printenv
+
+CMD ["/bin/bash"]

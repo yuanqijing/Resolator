@@ -1,0 +1,17 @@
+ALI_REGISTRY ?= registry.cn-hangzhou.aliyuncs.com
+ALI_REGISTRY_NAMESPACE ?= pandora-io
+ALI_REGISTRY_USER ?= "qijing89760"
+ALI_REGISTRY_PASSWORD ?= "pandora12345"
+
+BASE_IMAGE_NAME ?= resolator
+BASE_BUILDER_IMAGE_NAME ?= resolator-builder
+
+BASE_IMAGE_TAG ?= $(shell git rev-parse --short HEAD)
+BASE_DEV_IMAGE_TAG ?= dev-$(shell date +'%m%d%H%M')
+BASE_BUILDER_IMAGE_TAG ?= build-$(shell date +'%m%d%H%M')
+
+DEV_IMAGE_FULL_NAME ?= $(ALI_REGISTRY)/$(ALI_REGISTRY_NAMESPACE)/$(BASE_IMAGE_NAME):$(BASE_DEV_IMAGE_TAG)
+
+.PHONY: login
+login: ## Login to the ali registry
+	docker login -u ${ALI_REGISTRY_USER} -p ${ALI_REGISTRY_PASSWORD} ${ALI_REGISTRY}

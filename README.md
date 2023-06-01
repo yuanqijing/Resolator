@@ -1,2 +1,2 @@
-# Resolator
+# resolator
 Resource Isolator.
